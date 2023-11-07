@@ -10,6 +10,10 @@ const products = [
     { id: 3, name: 'Yanis la saucisse', price: '3€', image: require('../assets/saucisse.jpg') },
     { id: 4, name: 'Ramy le rempli', price: '60€', image: require('../assets/ramy.jpg') },
     { id: 5, name: 'Donia le chihuahua', price: '50€', image: require('../assets/donia.jpg') },
+    { id: 6, name: 'Benoit le malinois', price: '12€', image: require('../assets/benoit.jpg') },
+    { id: 7, name: 'Romains les chiens', price: '67€', image: require('../assets/romain.jpg') },
+    { id: 8, name: 'Lucas le shiba', price: '42€', image: require('../assets/micka.jpeg') },
+    { id: 9, name: 'Hamed le samoyéde', price: '37€', image: require('../assets/hamed.jpg') },
 ];
 
 const ListingScreen = ({ navigation }) => {

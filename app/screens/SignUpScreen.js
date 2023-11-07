@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, D
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
+//import { checkUser } from '../config/route';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -16,8 +17,7 @@ const LoginScreen = ({navigation}) => {
 
     const handleLogin = () => {
         if (email && password) {
-            console.log('Connecté avec succès');
-            navigation.navigate('ListingScreen')
+          navigation.navigate('ListingScreen');
         } else {
             console.log('Veuillez remplir tous les champs');
             alert('Veuillez remplir tous les champs');
