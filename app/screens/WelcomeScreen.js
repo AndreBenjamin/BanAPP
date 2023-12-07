@@ -21,7 +21,7 @@ function WelcomeScreen({ navigation }) {
     ]);
     return (
 
-        <ImageBackground source={image} blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
+        <ImageBackground source={image} style={styles.imageContainer}>
             <View style={styles.logoView}>
                 <Image
                     style={styles.logo}
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     // Button Part  
       imageContainer: {
         flex: 1,
+        resizeMode:"cover",
         justifyContent: 'flex-end',
       },
 

@@ -11,6 +11,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ProfileScreen from './app/screens/ProfileScreen';
 import SignUpScreen from './app/screens/SignUpScreen';
 import SignInScreen from './app/screens/SignInScreen';
+import CameraScreen from './app/screens/CameraScreen';
+import UploadImageScreen from './app/screens/UploadImageScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,13 +24,15 @@ export default function App() {
     //<ListingScreen/>
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
+      <Stack.Navigator initialRouteName="ListingScreen">
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ListingScreen" component={ListingScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ListingDetailsScreen" component={ListingDetailsScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="UploadImageScreen" component={UploadImageScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

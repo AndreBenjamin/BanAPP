@@ -1,33 +1,91 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Dimensions, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, ScrollView, Image, ActivityIndicator} from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
 
-const windowWidth = Dimensions.get('window').width;
+// Import Firebase
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { FIREBASE_DB } from '../../FirebaseConfig';
+const db = FIREBASE_DB;
+import { collection, addDoc } from "firebase/firestore"; 
+
 
 const SignInScreen = ({navigation}) => {
     // Import Images
     const image = require('../assets/tiny.jpg');
     const logo = require('../assets/dog.png');
 
+    const [loading, setLoading] = useState(false);
+
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    
+    // Import auth
+    const auth = FIREBASE_AUTH;
 
-    const handleLogin = () => {
+    // Init useState for input errors
+    const [errorProfile, setErrorProfile] = useState("");
+    const [errorEmail, setErrorEmail] = useState("");
+    const [errorPwd, setErrorPwd] = useState("");
+    const [errorPwdSame, setErrorPwdSame] = useState("");
+
+    const handleLogin = async () => {
+        setLoading(true);
+        setErrorProfile("")
+        setErrorEmail("")
+        setErrorPwd("")
+        setErrorPwdSame("")
+
         if (email && password && confirmPassword && name) {
-            if (password = confirmPassword){
-                console.log('Connecté avec succès');
-                navigation.navigate('ListingScreen')
+            if (password == confirmPassword){
+                try {
+                    const response = await createUserWithEmailAndPassword(auth, email, password);
+                    if (response) {
+                      console.log('Connecté avec succès');
+                      try {
+                        const docRef = await addDoc(collection(db, "users"), {
+                            name: name,
+                            email: email,
+                            lastConnection: new Date(),
+                        });
+                        console.log("Document written with ID: ", docRef.id);
+                        } catch (e) {
+                        console.error("Error adding document: ", e);
+                        }
+                      navigation.navigate('ListingScreen');
+                    }
+                  } catch (error) {
+                    console.log(error.message);
+                  } finally {
+                    setLoading(false);
+                  }
+                  setErrorPwd("email or password not valid. Please try again.")
             }else {
                 console.log('Les mots de passe ne correspondent pas');
+                setErrorPwdSame("Les mots de passe ne correspondent pas")
                 alert('Les mots de passe ne correspondent pas');
             }
+            setLoading(false);
         } else {
             console.log('Veuillez remplir tous les champs');
+            if (!email) {
+                setErrorEmail("Email not valid. Please try again.")
+            }
+            if (!password) {
+                setErrorPwd("Password not valid. Please try again.")
+            }
+            if (!confirmPassword) {
+                setErrorPwdSame("Password not valid. Please try again.")
+            }
+            if (!name) {
+                setErrorProfile("Profile Name not valid. Please try again.")
+            }
             alert('Veuillez remplir tous les champs');
+            setLoading(false);
         }
     };
 
@@ -38,58 +96,68 @@ const SignInScreen = ({navigation}) => {
     return (
        
         <ImageBackground source={image} blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
-
-            <View style={styles.logoView}>
-                <Image
-                    style={styles.logo}
-                    source={logo}
-                />
-                <View style={styles.logoTextContainer}>
-                    <AppText>Pick Your DOG!</AppText>
-                </View>
-            </View>
-            <View style={styles.inputContainer}>
-                <View style={{marginBottom: 30}}>
-                    <AppText>Profile Name:</AppText>
-                        <TextInput
-                            style={styles.inputText}
-                            placeholder="Set your profile Name"
-                            value={name}
-                            onChangeText={setName}
-                        />
-                    <AppText>Email:</AppText>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Enter your email"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                    />
-                    <AppText>Password:</AppText>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={true}
-                    />
-                    <AppText>Confirm Password:</AppText>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        secureTextEntry={true}
-                    />
-                </View>
-            </View>
-            <View style={styles.loginContainer}>
-                <LoginButton text="Create account" color="pink" onPress={handleLogin}/>
-                <TouchableOpacity onPress={handleConnectAccount} style={{bottom:20}}>
-                    <Text style={{color: colors.primary}}>Connect yourself!</Text>
-                </TouchableOpacity>
-            </View>
-            
+            <ScrollView>
+              <View style={styles.logoView}>
+                  <Image
+                      style={styles.logo}
+                      source={logo}
+                  />
+                  <View style={styles.logoTextContainer}>
+                      <AppText>Pick Your DOG!</AppText>
+                  </View>
+              </View>
+              <View style={styles.inputContainer}>
+                  <View style={{marginBottom: 30}}>
+                      <AppText>Profile Name:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Set your profile Name"
+                          value={name}
+                          onChangeText={setName}
+                      />
+                      <Text style={styles.error}>{errorProfile}</Text>
+                      <AppText>Email:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Enter your email"
+                          value={email}
+                          onChangeText={setEmail}
+                          keyboardType="email-address"
+                      />
+                      <Text style={styles.error}>{errorEmail}</Text>
+                      <AppText>Password:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Enter your password"
+                          value={password}
+                          onChangeText={setPassword}
+                          secureTextEntry={true}
+                      />
+                      <Text style={styles.error}>{errorPwd}</Text>
+                      <AppText>Confirm Password:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Confirm your password"
+                          value={confirmPassword}
+                          onChangeText={setConfirmPassword}
+                          secureTextEntry={true}
+                      />
+                      <Text style={styles.error}>{errorPwdSame}</Text>
+                  </View>
+              </View>
+              
+              {loading ? (
+                  <ActivityIndicator size="large" color={colors.primary} />
+              ) : (
+                  <View style={styles.loginContainer}>
+                      <LoginButton text="Create account" color="pink" onPress={handleLogin}/>
+                      <TouchableOpacity onPress={handleConnectAccount} style={{bottom:20}}>
+                          <Text style={{color: colors.primary}}>Connect yourself!</Text>
+                      </TouchableOpacity>
+                  </View>
+              )
+              }
+            </ScrollView>
         </ImageBackground>
     );
 };
@@ -120,6 +188,7 @@ const styles = StyleSheet.create({
       loginContainer: {
         alignItems: 'center',
         marginTop: '50%',
+        bottom: '10%',
         marginVertical: 20,
       },
 
@@ -146,6 +215,11 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         width: 250,
         top: 10,
+      },
+
+      error: {
+        color: 'red',
+        alignSelf: 'center'
       },
 });
 

@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Dimensions, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Dimensions, Image, ActivityIndicator, Modal, Alert} from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
+import {BlurView} from 'expo-blur'
+
+// Import Firebase
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { FIREBASE_DB } from '../../FirebaseConfig';
+const db = FIREBASE_DB;
+import { collection, addDoc } from "firebase/firestore"; 
+
 //import { checkUser } from '../config/route';
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -12,16 +23,64 @@ const LoginScreen = ({navigation}) => {
     const image = require('../assets/tiny.jpg');
     const logo = require('../assets/dog.png');
 
+    // Import auth
+    const auth = FIREBASE_AUTH;
+
+    const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorEmail, setErrorEmail] = useState("");
+    const [errorPwd, setErrorPwd] = useState("");
+    const [errorResetEmail, setErrorResetEmail] = useState("");
 
-    const handleLogin = () => {
-        if (email && password) {
-          navigation.navigate('ListingScreen');
-        } else {
-            console.log('Veuillez remplir tous les champs');
-            alert('Veuillez remplir tous les champs');
+    const handleResetPwd = async () => {
+    
+      if (email) {
+        try {
+          const response = await sendPasswordResetEmail(auth, email);
+          alert('Mail send for reset your password');
+          setModalVisible(!modalVisible);
+        } catch (error) {
+          console.log(error.message);
+        } finally {
         }
+      } else {
+        setErrorResetEmail("Email not valid. Please try again.")
+      }
+    }
+
+    const handleLogin = async () => {
+        setLoading(true);
+        setErrorEmail("")
+        setErrorPwd("")
+       
+
+        if (email && password) {
+          try {
+            const response = await signInWithEmailAndPassword(auth, email, password);
+            if (response) {
+              console.log('Connecté avec succès');
+              navigation.navigate('ListingScreen');
+            }
+          } catch (error) {
+            console.log(error.message);
+          } finally {
+            setLoading(false);
+          }
+          setErrorPwd("email or password not valid. Please try again.")
+        } else {
+          alert('Veuillez remplir tous les champs');
+        }
+        if (!email) {
+            setErrorEmail("Email not valid. Please try again.")
+        }
+        if (!password) {
+            setErrorPwd("Password not valid. Please try again.")
+        }
+        setLoading(false);
+
     };
 
     const handleCreateAccount = () => {
@@ -31,43 +90,80 @@ const LoginScreen = ({navigation}) => {
     return (
        
         <ImageBackground source={image} blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
+            <View blurRadius={modalVisible ? 600 : 0}>
 
-            <View style={styles.logoView}>
-                <Image
-                    style={styles.logo}
-                    source={logo}
-                />
-                <View style={styles.logoTextContainer}>
-                    <AppText>Pick Your DOG!</AppText>
+              
+              <View style={styles.logoView}>
+                  <Image
+                      style={styles.logo}
+                      source={logo}
+                  />
+                  <View style={styles.logoTextContainer}>
+                      <AppText>Pick Your DOG!</AppText>
+                  </View>
+              </View>
+              <View style={styles.inputContainer}>
+                  <View style={{marginBottom: 30}}>
+                      <AppText>Email:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Enter your email"
+                          value={email}
+                          onChangeText={setEmail}
+                          keyboardType="email-address"
+                      />
+                      <Text style={styles.error}>{errorEmail}</Text>
+                      <AppText>Password:</AppText>
+                      <TextInput
+                          style={styles.inputText}
+                          placeholder="Enter your password"
+                          value={password}
+                          onChangeText={setPassword}
+                          secureTextEntry={true}
+                      />
+                      <Text style={styles.error}>{errorPwd}</Text>
+                  </View>
+              </View>
+
+              {loading ? (
+                  <ActivityIndicator size="large" color={colors.primary} />
+              ) : (
+                <View style={styles.loginContainer}>
+                  <LoginButton text="Login" color="pink" onPress={handleLogin}/>
+                  <LoginButton text="Reset password" color="info" onPress={() => setModalVisible(true)}/>
+                  <TouchableOpacity onPress={handleCreateAccount} style={{bottom:20}}>
+                      <Text style={{color: colors.primary}}>Create your account right now!</Text>
+                  </TouchableOpacity>
                 </View>
+              )
+              }
             </View>
-            <View style={styles.inputContainer}>
-                <View style={{marginBottom: 30}}>
-                    <AppText>Email:</AppText>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Enter your email"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                    />
-                    <AppText>Password:</AppText>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={true}
-                    />
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+              >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                      <View style={{marginBottom: 30, backgroundColor: colors.light, borderRadius: 15, padding:5}}>
+                        <AppText>Reset Password:</AppText>
+                      </View>
+                      <TextInput
+                          style={styles.inputResetPwd}
+                          placeholder="Enter your email"
+                          value={email}
+                          onChangeText={setEmail}
+                          keyboardType="email-address"
+                      />
+                    <Text style={styles.error}>{errorResetEmail}</Text>
+                  <LoginButton text="Reset Password" color="info" onPress={handleResetPwd}/>
+                  <LoginButton text="Close" color="danger" onPress={() => setModalVisible(!modalVisible)}/>
                 </View>
-            </View>
-            <View style={styles.loginContainer}>
-                <LoginButton text="Login" color="pink" onPress={handleLogin}/>
-                <TouchableOpacity onPress={handleCreateAccount} style={{bottom:20}}>
-                    <Text style={{color: colors.primary}}>Create your account right now!</Text>
-                </TouchableOpacity>
-            </View>
-            
+              </View>
+          </Modal>
         </ImageBackground>
     );
 };
@@ -100,6 +196,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: '50%',
         marginVertical: 20,
+        bottom: '10%',
       },
 
        // logo part
@@ -126,6 +223,42 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         width: 250,
         top: 10,
+      },
+      error: {
+        color: 'red',
+        alignSelf: 'center'
+      },
+
+      // Modal
+      modalView: {
+        margin: 20,
+        backgroundColor: colors.white,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: colors.black,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        marginTop: 22,
+      },
+      inputResetPwd: {
+        backgroundColor: "white",
+        borderColor: "gray",
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        bottom: 20,
+        paddingHorizontal: 50,
       },
 });
 

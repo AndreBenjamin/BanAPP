@@ -4,6 +4,7 @@ import colors from '../config/colors';
 import ProductCard from '../components/ProductCard';
 import AppText from '../components/AppText';
 import TopBar from '../components/TopBar';
+import BottomBarNavigator from '../components/BottomBarNavigator';
 
 const image = { uri: "https://cdn.discordapp.com/attachments/763467509759475813/1163397716374716469/Snapchat-1340042168.jpg?ex=653f6d8e&is=652cf88e&hm=f4f4e16968c2c6ff6c31a49fca9b3055a9584b98f02cbbb43454ca3ecaf1a47d&" };
 const seller = require('../assets/benjamin.png');
@@ -23,6 +24,7 @@ function ListingDetailsScreen({route}) {
                     <Text style={styles.sellerName}>6 Rue de Lille</Text>
                 </View>
             </View>
+            <BottomBarNavigator/>
         </View>
         );
 }

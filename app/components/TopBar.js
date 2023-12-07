@@ -18,7 +18,7 @@ const TopBar = () => {
             <TouchableOpacity style={styles.icon} onPress={handleGoBack}>
                 <MaterialCommunityIcons name="arrow-left-bold-circle" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ListingScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}>
                 <Image source={require('../assets/dog.png')} style={styles.logo} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.profile} onPress={handleGoProfile}>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'left',
         height: 60,
-        backgroundColor: colors.pink,
+        backgroundColor: colors.white,
         borderBottomWidth: 1,
         borderBottomColor: colors.black,
     },
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         marginLeft: '250%',
-        backgroundColor: colors.white,
+        backgroundColor: colors.grey,
         borderRadius: 55,
     },
     icon: {

@@ -1,41 +1,97 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+
+import { View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, SafeAreaView } from 'react-native';
 import ProductCard from '../components/ProductCard';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
+import BottomBarNavigator from '../components/BottomBarNavigator';
+import { FIREBASE_DB } from '../../FirebaseConfig';
 
-const products = [
-    { id: 1, name: 'Tiny le Méchant', price: '120€', image: require('../assets/tiny.jpg') },
-    { id: 2, name: 'Roxy la chuky', price: '121€', image: require('../assets/roxy.jpg') },
-    { id: 3, name: 'Yanis la saucisse', price: '3€', image: require('../assets/saucisse.jpg') },
-    { id: 4, name: 'Ramy le rempli', price: '60€', image: require('../assets/ramy.jpg') },
-    { id: 5, name: 'Donia le chihuahua', price: '50€', image: require('../assets/donia.jpg') },
-    { id: 6, name: 'Benoit le malinois', price: '12€', image: require('../assets/benoit.jpg') },
-    { id: 7, name: 'Romains les chiens', price: '67€', image: require('../assets/romain.jpg') },
-    { id: 8, name: 'Lucas le shiba', price: '42€', image: require('../assets/micka.jpeg') },
-    { id: 9, name: 'Hamed le samoyéde', price: '37€', image: require('../assets/hamed.jpg') },
-];
+const db = FIREBASE_DB;
+
+import { collection, getDocs, addDoc } from "firebase/firestore"; 
+
+const getDogs = async () => {
+    const dogsArray = [];
+
+    const querySnapshot = await getDocs(collection(db, "dogs"));
+    querySnapshot.forEach((doc) => {
+        const dog = doc.data();
+        console.log(doc.id)
+        dogsArray.push(
+            {
+                id: dog.id,
+                name: dog.name,
+                price: dog.price,
+                image: dog.image,
+        });
+    });
+    
+    return dogsArray;
+}
 
 const ListingScreen = ({ navigation }) => {
+    const [dogsArray, setDogsArray] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'dogs'));
+                const fetchedDogs = [];
+                querySnapshot.forEach((doc) => {
+                    const dog = doc.data();
+                    const dogImage = { uri: dog.image };
+                    fetchedDogs.push({
+                        id: dog.id,
+                        name: dog.name,
+                        price: dog.price,
+                        image: dogImage,
+                    });
+                });
+                setDogsArray(fetchedDogs);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []); // Le tableau de dépendances vide signifie que cet effet s'exécutera une fois après le rendu initial.
+
     return (
-        <View style={{ flex: 1, backgroundColor: colors.light }}>
-            <TopBar/>
-            <ScrollView>
-                {products.map((product) => (
-                    <TouchableOpacity onPress={() => {
-                        navigation.navigate('ListingDetailsScreen', {
-                        name: product.name,
-                        price: product.price,
-                        image: product.image,
-                        });
-                    }}>
-                        <View style={styles.container}>
-                            <ProductCard name={product.name} price={product.price} image={product.image}/>
-                        </View>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
-        </View>
+        <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light }}>
+            <TopBar />
+
+            {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+                <ScrollView style={{marginBottom: 60}}>
+                    {dogsArray.map((product) => (
+                        <TouchableOpacity
+                            key={product.id}
+                            onPress={() => {
+                                navigation.navigate('ListingDetailsScreen', {
+                                    name: product.name,
+                                    price: product.price,
+                                    image: product.image,
+                                });
+                            }}
+                        >
+                            <View style={styles.container}>
+                                <ProductCard name={product.name} price={product.price} image={product.image} />
+                            </View>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            )}
+            <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('UploadImageScreen');}}>
+                <Text><MaterialIcons name="create" size={35} color="black" /></Text>
+            </TouchableOpacity>
+            <BottomBarNavigator/>
+        </SafeAreaView >
     );
 };
 
@@ -47,6 +103,14 @@ const styles = StyleSheet.create({
         alignItems: 'left',
         margin: 10,
     },
+    button: {
+        position: 'absolute',
+        bottom: "10%",
+        right: 20,
+        backgroundColor: colors.grey, // Assurez-vous d'avoir défini color.info dans votre thème ou utilisez une couleur directe comme 'blue'
+        padding: 10,
+        borderRadius: 25,
+      },
 });
 
 export default ListingScreen;
