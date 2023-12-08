@@ -1,70 +1,52 @@
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import WelcomeScreen from '../screens/WelcomeScreen';
 import ListingScreen from '../screens/ListingScreen';
-import MapButton from '../navigation/MapButton';
-import MyDogsNavigator from '../navigation/MyDogsNavigator';
+import MapScreen from '../screens/MapScreen';
+import UploadImageScreen from '../screens/UploadImageScreen';
+import colors from '../config/colors';
+
 
 const Tab = createBottomTabNavigator();
-
+//<MaterialIcons name="pets" size={24} color="black" />
 const BottomTabNavigator = () => {
   const navigation = useNavigation();
-
-  const TabBarButton = ({ onPress, children }) => (
-    <TouchableOpacity onPress={onPress} style={styles.tabBarButton}>
-      <View>{children}</View>
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.container}>
-      <Tab.Navigator>
-        <Tab.Screen
-          name="map"
-          component={WelcomeScreen}
-          options={{
-            tabBarButton: () => (
-              <MapButton onPress={() => navigation.navigate('ListingScreen')}/>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Liste"
-          component={ListingScreen}
-          options={{
-            tabBarButton: () => (
-              <MapButton onPress={() => navigation.navigate('ListingScreen')}/>
-            ),
-          }}
-        />
-         <Tab.Screen
-            name="My Dogs"
-            component={MyDogsNavigator}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="dog" color={color} size={size} />
-              ),
-            }}
-          />
-      </Tab.Navigator>
-    </View>
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="ListingScreen">
+      <Tab.Screen
+        name="DogsMap"
+        component={MapScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="google-maps" size={size} color={colors.info} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ListingScreen"
+        component={ListingScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="format-list-bulleted-square" size={size} color={colors.info} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="My Dogs"
+        component={UploadImageScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="pets" size={size} color={colors.info} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  tabBarButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-  },
-});
 
 export default BottomTabNavigator;

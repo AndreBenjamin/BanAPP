@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import colors from '../config/colors';
 import ProductCard from '../components/ProductCard';
-import AppText from '../components/AppText';
 import TopBar from '../components/TopBar';
-import BottomBarNavigator from '../components/BottomBarNavigator';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from '../../FirebaseConfig';
@@ -48,7 +46,6 @@ function ListingDetailsScreen({route}) {
                     <Text style={styles.sellerName}>{email}</Text>
                 </View>
             </View>
-            <BottomBarNavigator/>
         </View>
         );
 }

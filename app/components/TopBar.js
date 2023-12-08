@@ -41,7 +41,7 @@ const TopBar = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('ListingScreen')}>
                 <Image source={require('../assets/dog.png')} style={styles.logo} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.profile} onPress={handleGoProfile}>

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, SafeAreaView } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, SafeAreaView, Image } from 'react-native';
 import ProductCard from '../components/ProductCard';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
-import BottomBarNavigator from '../components/BottomBarNavigator';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 
 const db = FIREBASE_DB;
@@ -46,13 +45,15 @@ const ListingScreen = ({ navigation }) => {
     });
 
     return (
-        <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light }}>
+        <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light}}>
             <TopBar />
 
             {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <View style={styles.loadingContainer}>
+                    <Image source={require('../assets/gif/Loading.gif')} style={styles.loadingGif} />
+                </View>
             ) : (
-                <ScrollView style={{marginBottom: 60}}>
+                <ScrollView>
                     {dogsArray.map((dog) => (
                         <TouchableOpacity
                             key={dog.id}
@@ -73,9 +74,8 @@ const ListingScreen = ({ navigation }) => {
                 </ScrollView>
             )}
             <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('UploadImageScreen');}}>
-                <Text><MaterialIcons name="create" size={35} color="black" /></Text>
+                <Text><MaterialIcons name="add" size={35} color="black" /></Text>
             </TouchableOpacity>
-            <BottomBarNavigator/>
         </SafeAreaView >
     );
 };
@@ -92,10 +92,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: "10%",
         right: 20,
-        backgroundColor: colors.grey, // Assurez-vous d'avoir défini color.info dans votre thème ou utilisez une couleur directe comme 'blue'
+        backgroundColor: colors.info,
         padding: 10,
         borderRadius: 25,
       },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingGif: {
+        width: 100,
+        height: 100,
+    },
 });
 
 export default ListingScreen;

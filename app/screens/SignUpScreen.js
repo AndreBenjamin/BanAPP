@@ -13,6 +13,7 @@ import { FIREBASE_DB } from '../../FirebaseConfig';
 const db = FIREBASE_DB;
 import { collection, addDoc } from "firebase/firestore"; 
 
+
 //import { checkUser } from '../config/route';
 
 
@@ -62,7 +63,7 @@ const LoginScreen = ({navigation}) => {
             const response = await signInWithEmailAndPassword(auth, email, password);
             if (response) {
               console.log('Connecté avec succès');
-              navigation.navigate('ListingScreen');
+              navigation.navigate('BottomTabNavigator');
             }
           } catch (error) {
             console.log(error.message);
