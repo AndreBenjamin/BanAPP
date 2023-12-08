@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, SafeAreaView } from 'react-native';
 import ProductCard from '../components/ProductCard';
 import colors from '../config/colors';
@@ -12,42 +13,25 @@ const db = FIREBASE_DB;
 
 import { collection, getDocs, addDoc } from "firebase/firestore"; 
 
-const getDogs = async () => {
-    const dogsArray = [];
-
-    const querySnapshot = await getDocs(collection(db, "dogs"));
-    querySnapshot.forEach((doc) => {
-        const dog = doc.data();
-        console.log(doc.id)
-        dogsArray.push(
-            {
-                id: dog.id,
-                name: dog.name,
-                price: dog.price,
-                image: dog.image,
-        });
-    });
-    
-    return dogsArray;
-}
-
 const ListingScreen = ({ navigation }) => {
     const [dogsArray, setDogsArray] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    useFocusEffect(() => {
+        
         const fetchData = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'dogs'));
+                const querySnapshot = await getDocs(collection(db, 'dogsPhoto'));
                 const fetchedDogs = [];
                 querySnapshot.forEach((doc) => {
                     const dog = doc.data();
                     const dogImage = { uri: dog.image };
                     fetchedDogs.push({
-                        id: dog.id,
-                        name: dog.name,
-                        price: dog.price,
+                        id: doc.id,
+                        name: dog.dogName,
+                        status: dog.status,
                         image: dogImage,
+                        userEmail: dog.userEmail,
                     });
                 });
                 setDogsArray(fetchedDogs);
@@ -59,7 +43,7 @@ const ListingScreen = ({ navigation }) => {
         };
 
         fetchData();
-    }, []); // Le tableau de dépendances vide signifie que cet effet s'exécutera une fois après le rendu initial.
+    });
 
     return (
         <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light }}>
@@ -69,19 +53,20 @@ const ListingScreen = ({ navigation }) => {
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 <ScrollView style={{marginBottom: 60}}>
-                    {dogsArray.map((product) => (
+                    {dogsArray.map((dog) => (
                         <TouchableOpacity
-                            key={product.id}
+                            key={dog.id}
                             onPress={() => {
                                 navigation.navigate('ListingDetailsScreen', {
-                                    name: product.name,
-                                    price: product.price,
-                                    image: product.image,
+                                    name: dog.name,
+                                    price: dog.status,
+                                    image: dog.image,
+                                    email: dog.userEmail,
                                 });
                             }}
                         >
                             <View style={styles.container}>
-                                <ProductCard name={product.name} price={product.price} image={product.image} />
+                                <ProductCard name={dog.name} price={dog.status} image={dog.image}/>
                             </View>
                         </TouchableOpacity>
                     ))}

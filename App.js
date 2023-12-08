@@ -13,6 +13,7 @@ import SignUpScreen from './app/screens/SignUpScreen';
 import SignInScreen from './app/screens/SignInScreen';
 import CameraScreen from './app/screens/CameraScreen';
 import UploadImageScreen from './app/screens/UploadImageScreen';
+import MapScreen from './app/screens/MapScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,7 +25,7 @@ export default function App() {
     //<ListingScreen/>
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ListingScreen">
+      <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ListingScreen" component={ListingScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ListingDetailsScreen" component={ListingDetailsScreen} options={{ headerShown: false }}/>
@@ -33,6 +34,7 @@ export default function App() {
         <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="UploadImageScreen" component={UploadImageScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="MapScreen" component={MapScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

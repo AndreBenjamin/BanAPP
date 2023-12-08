@@ -1,28 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import { useNavigation } from '@react-navigation/native';
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { FIREBASE_DB } from '../../FirebaseConfig';
+
+const db = FIREBASE_DB;
 
 const TopBar = () => {
+    const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
+
+    const email = FIREBASE_AUTH.currentUser.email;
+
     const navigation = useNavigation();
 
     const handleGoBack = () => {
         navigation.goBack();
     };
 
-    const handleGoProfile = () => navigation.navigate('ProfileScreen');
+    useEffect(() => {
+        const user = async () => {
+            console.log(email)
+            const q = query(collection(db, "users"), where("email", "==", email));
+
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                setUserPhoto(user.photo)
+                console.log(user.photo)
+            });
+        };
+        user();
+    }, []);
+
+    const handleGoProfile = () => {
+        navigation.navigate('ProfileScreen');
+    };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.icon} onPress={handleGoBack}>
-                <MaterialCommunityIcons name="arrow-left-bold-circle" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
                 <Image source={require('../assets/dog.png')} style={styles.logo} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.profile} onPress={handleGoProfile}>
-                <Image source={require('../assets/benjamin.png')} style={styles.imageProfile}/>
+                <Image source={{uri: userPhoto}} style={styles.imageProfile}/>
             </TouchableOpacity>
         </View>
     );
@@ -30,35 +53,30 @@ const TopBar = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
+        flexDirection: 'absolute',
         alignItems: 'center',
-        justifyContent: 'left',
+        justifyContent: 'space-between',
         height: 60,
         backgroundColor: colors.white,
         borderBottomWidth: 1,
         borderBottomColor: colors.black,
+        paddingHorizontal: 10,
     },
     logo: {
         width: 50,
         height: 50,
-        marginLeft: '45%',
+        alignSelf: 'center',
+        top: "10%",
     },
     imageProfile: {
         width: 50,
         height: 50,
-        marginLeft: '250%',
         backgroundColor: colors.grey,
         borderRadius: 55,
     },
-    icon: {
-        width: 30,
-        height: 30,
-        marginLeft: 10,
-    },
     profile: {
-        width: 10,
-        height: 10,
-        bottom: 20,
+        alignSelf: 'flex-end',
+        bottom: "75%",
     },
 });
 

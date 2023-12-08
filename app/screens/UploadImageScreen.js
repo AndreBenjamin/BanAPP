@@ -4,6 +4,8 @@ import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
 import * as ImagePicker from "expo-image-picker"; 
+import * as FileSystem from 'expo-file-system';
+
 
 
 // Import Firebase
@@ -11,7 +13,7 @@ import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 const db = FIREBASE_DB;
 import { collection, addDoc } from "firebase/firestore"; 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 
 import ImageViewer from '../components/ImageViewer';
 const PlaceholderImage =  require('../assets/dog.png');
@@ -38,6 +40,19 @@ const UploadImageScreen = ({navigation}) => {
 
     const [selectedImage, setSelectedImage] = useState(null);
 
+    const generateRandomId = () => {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const idLength = 10;
+    
+      let randomId = '';
+      for (let i = 0; i < idLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomId += characters.charAt(randomIndex);
+      }
+    
+      return randomId;
+    };
+
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
@@ -55,17 +70,23 @@ const UploadImageScreen = ({navigation}) => {
     const handleUpload = async () => {
         if (dogName && status && selectedImage) {
 
-          const dogsRef = ref(storage, "dogsImage/"+selectedImage);
+          const uuid = generateRandomId();
+          console.log('uuid', uuid);
+          const dogsRef = ref(storage, "dogsImage/"+uuid);
+          const response = await fetch(selectedImage);
+          const blob = await response.blob();
+          console.log('blob', blob);
 
-          uploadBytes(dogsRef, selectedImage).then((snapshot) => {
-            console.log('Uploaded a blob or file!');
-          });
+          await uploadBytes(dogsRef, blob);
+
+          const url = await getDownloadURL(dogsRef);
           try {
               const docRef = await addDoc(collection(db, "dogsPhoto"), {
                   dogName: dogName,
                   status: status,
-                  image: photo,
-                  todayDate: new Date(),
+                  image: url,
+                  userEmail: auth.currentUser.email,
+                  date: new Date(),
               });
               console.log("Document written with ID: ", docRef.id);
           } catch (e) {

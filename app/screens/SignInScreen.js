@@ -51,6 +51,7 @@ const SignInScreen = ({navigation}) => {
                             name: name,
                             email: email,
                             lastConnection: new Date(),
+                            photo: "https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e",
                         });
                         console.log("Document written with ID: ", docRef.id);
                         } catch (e) {

@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { FIREBASE_DB } from '../../FirebaseConfig';
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
+
+const db = FIREBASE_DB;
 
 function ProfileScreen({navigation}) {
+
+    const email = FIREBASE_AUTH.currentUser.email;
+
+
+    const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
+    const [name, setName] = useState("");
+    useEffect(() => {
+        const user = async () => {
+            console.log(email)
+            const q = query(collection(db, "users"), where("email", "==", email));
+
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                setUserPhoto(user.photo)
+                setName(user.name)
+                console.log(user.photo)
+                console.log(user.email)
+                console.log(user.name)
+            });
+        };
+        user();
+    }, []);
 
     const handleLogout = () => navigation.navigate('WelcomeScreen')
 
@@ -14,28 +42,14 @@ function ProfileScreen({navigation}) {
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white, width: '100%', padding: 10 }}>
                 <TouchableOpacity style={styles.icon}>
                     <Image
-                        source={require('../assets/benjamin.png')}
+                        source={{uri: userPhoto}}
                         style={{ width: 80, height: 80, borderRadius: 40 }}
                     />
                 </TouchableOpacity>
                 <View style={{ marginLeft: 20}}>
-                    <Text style={{ fontSize: 24 }}>Benjamin ANDRE</Text>
-                    <Text style={{ fontSize: 16, color: 'gray' }}>benjamin4andre@gmail.com</Text>
+                    <Text style={{ fontSize: 24 }}>{name}</Text>
+                    <Text style={{ fontSize: 16, color: 'gray' }}>{email}</Text>
                 </View>
-            </View>
-            <View>
-                <TouchableOpacity style={styles.listContainer}>
-                    <View style={styles.icon}>
-                        <MaterialCommunityIcons name="format-list-bulleted" size={24} color="white" />
-                    </View>
-                    <Text style={{ marginLeft: 20 }}>My Listings</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.listContainer}>
-                    <View style={{borderRadius: 55, backgroundColor: colors.info, padding: 5}}>
-                        <MaterialCommunityIcons name="message" size={24} color="white" />
-                    </View>
-                    <Text style={{ marginLeft: 20 }}>My Messages</Text>
-                </TouchableOpacity>
             </View>
             <TouchableOpacity
                 style={{
