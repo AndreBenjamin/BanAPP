@@ -87,6 +87,7 @@ const UploadImageScreen = ({navigation}) => {
                   image: url,
                   userEmail: auth.currentUser.email,
                   date: new Date(),
+                  bone: 0,
               });
               console.log("Document written with ID: ", docRef.id);
           } catch (e) {

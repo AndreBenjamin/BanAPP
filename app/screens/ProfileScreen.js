@@ -16,6 +16,7 @@ function ProfileScreen({navigation}) {
 
     const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
     const [name, setName] = useState("");
+    const [boneCount, setBoneCount] = useState(0)
     useEffect(() => {
         const user = async () => {
             console.log(email)
@@ -26,13 +27,31 @@ function ProfileScreen({navigation}) {
                 const user = doc.data();
                 setUserPhoto(user.photo)
                 setName(user.name)
-                console.log(user.photo)
-                console.log(user.email)
-                console.log(user.name)
+                //console.log(user.photo)
+                //console.log(user.email)
+                //console.log(user.name)
             });
         };
         user();
     }, []);
+
+    useEffect(() => {
+        const dog = async () => {
+            const q = query(collection(db, "dogsPhoto"), where("userEmail", "==", email));
+            var boneCounter = 0;
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const dog = doc.data();
+                boneCounter += dog.bone;
+                console.log('boneCount:', boneCounter);
+            });
+            setBoneCount(boneCounter);
+            console.log(boneCount)
+        };
+        dog();
+    }, []);
+
+    
 
     const handleLogout = () => navigation.navigate('WelcomeScreen')
 
