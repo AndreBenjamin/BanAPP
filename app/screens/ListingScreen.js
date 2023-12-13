@@ -30,7 +30,10 @@ const ListingScreen = ({ navigation }) => {
                         name: dog.dogName,
                         status: dog.status,
                         image: dogImage,
+                        dogImagePath: dog.image,
                         userEmail: dog.userEmail,
+                        bone: dog.bone,
+                        date: dog.date,
                     });
                 });
                 setDogsArray(fetchedDogs);
@@ -45,7 +48,7 @@ const ListingScreen = ({ navigation }) => {
     });
 
     return (
-        <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light}}>
+        <SafeAreaView  style={{ flex: 1, backgroundColor: colors.grey}}>
             <TopBar />
 
             {loading ? (
@@ -59,15 +62,19 @@ const ListingScreen = ({ navigation }) => {
                             key={dog.id}
                             onPress={() => {
                                 navigation.navigate('ListingDetailsScreen', {
+                                    id: dog.id,
                                     name: dog.name,
                                     price: dog.status,
                                     image: dog.image,
                                     email: dog.userEmail,
+                                    bone: dog.bone,
+                                    date: dog.date,
+                                    dogImagePath: dog.dogImagePath,
                                 });
                             }}
                         >
                             <View style={styles.container}>
-                                <ProductCard name={dog.name} price={dog.status} image={dog.image}/>
+                                <ProductCard name={dog.name} price={dog.status} image={dog.image} boneCount={dog.bone}/>
                             </View>
                         </TouchableOpacity>
                     ))}
@@ -92,9 +99,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: "10%",
         right: 20,
-        backgroundColor: colors.info,
+        backgroundColor: colors.purple,
         padding: 10,
-        borderRadius: 25,
+        borderRadius: 30,
       },
     loadingContainer: {
         flex: 1,

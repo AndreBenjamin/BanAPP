@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import colors from '../config/colors';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
-const ProductCard = ({ image, name, price }) => {
+const ProductCard = ({ image, name, price, boneCount }) => {
     return (
         <View style={styles.card}>
             <Image source={image} style={styles.image} />
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.price}>{price}</Text>
+            <Text style={styles.price}><MaterialCommunityIcons name="bone" size={18} color="pink" /> {boneCount}</Text>
         </View>
     );
 };
@@ -18,8 +20,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
         alignItems: 'left',
-        //margin: 10,
-        marginBottom: 10,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -28,11 +28,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        top: 10,
     },
     image: {
         width: '100%',
-        height: 250,
+        height: 450,
     },
     name: {
         fontSize: 18,

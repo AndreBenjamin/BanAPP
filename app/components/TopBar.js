@@ -20,6 +20,7 @@ const TopBar = () => {
         navigation.goBack();
     };
 
+    // TODO: Get user photo on live
     useEffect(() => {
         const user = async () => {
             console.log(email)

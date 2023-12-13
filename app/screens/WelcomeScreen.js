@@ -8,7 +8,7 @@ import LoginButton from '../components/LoginButton';
 const windowWidth = Dimensions.get('window').width;
 
 function WelcomeScreen({ navigation }) {
-    const image = { uri: "https://cdn.discordapp.com/attachments/763467509759475813/1163397716374716469/Snapchat-1340042168.jpg?ex=653f6d8e&is=652cf88e&hm=f4f4e16968c2c6ff6c31a49fca9b3055a9584b98f02cbbb43454ca3ecaf1a47d&" };
+    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
     const logo = require('../assets/dog.png');
     const thanks = () => Alert.alert("Merci copain");
     const handlePressButton = () => Alert.alert("OUAF", "Tu as du fromage pour moi!", [
@@ -32,8 +32,8 @@ function WelcomeScreen({ navigation }) {
                 </View>
             </View>
             <View style={styles.buttonContainer}>
-                <LoginButton text="Sign In" color="danger" onPress={() => navigation.navigate('SignUpScreen')}/>
-                <LoginButton text="Sign Up" color="success"  onPress={() => navigation.navigate('SignInScreen')}/>
+                <LoginButton text="Sign In" color="info" onPress={() => navigation.navigate('SignUpScreen')}/>
+                <LoginButton text="Sign Up" color="purple"  onPress={() => navigation.navigate('SignInScreen')}/>
             </View>
             
             <StatusBar style="auto" />
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
       },
       logoTextContainer: {
-        backgroundColor: 'rgba(255, 196, 248, 0.3)',
+        backgroundColor: 'rgba(128,0,128, 0.3)',
         borderRadius: 25,
         width: 250,
         top: 10,

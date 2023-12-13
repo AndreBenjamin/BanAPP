@@ -14,7 +14,7 @@ import { collection, addDoc } from "firebase/firestore";
 
 const SignInScreen = ({navigation}) => {
     // Import Images
-    const image = require('../assets/tiny.jpg');
+    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
     const logo = require('../assets/dog.png');
 
     const [loading, setLoading] = useState(false);
@@ -96,7 +96,7 @@ const SignInScreen = ({navigation}) => {
 
     return (
        
-        <ImageBackground source={image} blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
+        <ImageBackground source={image} resizeMode="cover" style={styles.imageContainer}>
             <ScrollView>
               <View style={styles.logoView}>
                   <Image
@@ -151,9 +151,9 @@ const SignInScreen = ({navigation}) => {
                   <ActivityIndicator size="large" color={colors.primary} />
               ) : (
                   <View style={styles.loginContainer}>
-                      <LoginButton text="Create account" color="pink" onPress={handleLogin}/>
+                      <LoginButton text="Create account" color="purple" onPress={handleLogin}/>
                       <TouchableOpacity onPress={handleConnectAccount} style={{bottom:20}}>
-                          <Text style={{color: colors.primary}}>Connect yourself!</Text>
+                          <Text style={{color: colors.black, fontWeight: 'bold'}}>Connect yourself!</Text>
                       </TouchableOpacity>
                   </View>
               )
@@ -169,11 +169,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-top',
         position: 'absolute',
         width: '100%',
+        height: '100%',
       },
       inputContainer: {
         alignItems: 'center',
-        marginTop: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.4)',
+        marginTop: '15%',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
         borderRadius: 50,
         marginHorizontal: 30,
       },
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
       },
       loginContainer: {
         alignItems: 'center',
-        marginTop: '50%',
+        marginTop: '70%',
         bottom: '10%',
         marginVertical: 20,
       },
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
       },
       logoTextContainer: {
-        backgroundColor: 'rgba(255, 196, 248, 0.3)',
+        backgroundColor: 'rgba(128,0,128, 0.3)',
         borderRadius: 25,
         width: 250,
         top: 10,

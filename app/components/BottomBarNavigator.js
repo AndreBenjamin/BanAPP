@@ -23,7 +23,7 @@ const BottomTabNavigator = () => {
         component={MapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="google-maps" size={size} color={colors.info} />
+            <MaterialCommunityIcons name="google-maps" size={size} color={colors.purple} />
           ),
         }}
       />
@@ -32,7 +32,7 @@ const BottomTabNavigator = () => {
         component={ListingScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="format-list-bulleted-square" size={size} color={colors.info} />
+            <MaterialCommunityIcons name="format-list-bulleted-square" size={size} color={colors.purple} />
           ),
         }}
       />
@@ -41,7 +41,7 @@ const BottomTabNavigator = () => {
         component={UploadImageScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="pets" size={size} color={colors.info} />
+            <MaterialIcons name="pets" size={size} color={colors.purple} />
           ),
         }}
       />

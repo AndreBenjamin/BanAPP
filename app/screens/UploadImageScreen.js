@@ -5,8 +5,7 @@ import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
 import * as ImagePicker from "expo-image-picker"; 
 import * as FileSystem from 'expo-file-system';
-
-
+import TopBar from '../components/TopBar';
 
 // Import Firebase
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -20,7 +19,7 @@ const PlaceholderImage =  require('../assets/dog.png');
 
 const UploadImageScreen = ({navigation}) => {
     // Import Images
-    const image = require('../assets/tiny.jpg');
+    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
     const logo = require('../assets/dog.png');
 
     const storage = getStorage();
@@ -29,7 +28,6 @@ const UploadImageScreen = ({navigation}) => {
     const auth = FIREBASE_AUTH;
 
     const [loading, setLoading] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
 
     const [dogName, setDogName] = useState('');
     const [status, setStatus] = useState('');
@@ -112,7 +110,8 @@ const UploadImageScreen = ({navigation}) => {
 
     return (
        
-        <View blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
+        <ImageBackground source={image} resizeMode="cover" style={styles.imageContainer}>
+            <TopBar/>
             <View style={styles.logoTextContainer}>
                 <Text style={styles.text}>Pick Your DOG!</Text>
             </View>
@@ -150,7 +149,7 @@ const UploadImageScreen = ({navigation}) => {
                 <LoginButton text="Upload" color="pink" onPress={handleUpload}/>
             </View>
             
-        </View>
+        </ImageBackground>
     );
 };
 
@@ -224,7 +223,8 @@ const styles = StyleSheet.create({
     footerContainer: {
       alignItems: 'center',
       padding: 20,
-      bottom: "15%"
+      bottom: "15%",
+      width: "100%",
     },
     container: {
         flex: 1,

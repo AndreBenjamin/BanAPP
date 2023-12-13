@@ -14,14 +14,9 @@ const db = FIREBASE_DB;
 import { collection, addDoc } from "firebase/firestore"; 
 
 
-//import { checkUser } from '../config/route';
-
-
-const windowWidth = Dimensions.get('window').width;
-
 const LoginScreen = ({navigation}) => {
     // Import Images
-    const image = require('../assets/tiny.jpg');
+    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
     const logo = require('../assets/dog.png');
 
     // Import auth
@@ -90,7 +85,7 @@ const LoginScreen = ({navigation}) => {
 
     return (
        
-        <ImageBackground source={image} blurRadius={5} resizeMode="cover" style={styles.imageContainer}>
+        <ImageBackground source={image} resizeMode="cover" style={styles.imageContainer}>
             <View blurRadius={modalVisible ? 600 : 0}>
 
               
@@ -130,10 +125,10 @@ const LoginScreen = ({navigation}) => {
                   <ActivityIndicator size="large" color={colors.primary} />
               ) : (
                 <View style={styles.loginContainer}>
-                  <LoginButton text="Login" color="pink" onPress={handleLogin}/>
+                  <LoginButton text="Login" color="purple" onPress={handleLogin}/>
                   <LoginButton text="Reset password" color="info" onPress={() => setModalVisible(true)}/>
                   <TouchableOpacity onPress={handleCreateAccount} style={{bottom:20}}>
-                      <Text style={{color: colors.primary}}>Create your account right now!</Text>
+                      <Text style={{color: colors.info, fontWeight: 'bold'}}>Create your account right now!</Text>
                   </TouchableOpacity>
                 </View>
               )
@@ -152,16 +147,19 @@ const LoginScreen = ({navigation}) => {
                       <View style={{marginBottom: 30, backgroundColor: colors.light, borderRadius: 15, padding:5}}>
                         <AppText>Reset Password:</AppText>
                       </View>
-                      <TextInput
+                      
+                    <Text style={styles.error}>{errorResetEmail}</Text>
+                    <TextInput
                           style={styles.inputResetPwd}
                           placeholder="Enter your email"
                           value={email}
                           onChangeText={setEmail}
                           keyboardType="email-address"
                       />
-                    <Text style={styles.error}>{errorResetEmail}</Text>
-                  <LoginButton text="Reset Password" color="info" onPress={handleResetPwd}/>
-                  <LoginButton text="Close" color="danger" onPress={() => setModalVisible(!modalVisible)}/>
+                  <View style={styles.buttonResetPwd}>
+                    <LoginButton text="Reset Password" color="info" onPress={handleResetPwd}/>
+                    <LoginButton text="Close" color="danger" onPress={() => setModalVisible(!modalVisible)}/>
+                  </View>
                 </View>
               </View>
           </Modal>
@@ -175,11 +173,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-top',
         position: 'absolute',
         width: '100%',
+        height: '100%',
       },
       inputContainer: {
         alignItems: 'center',
-        marginTop: '50%',
-        backgroundColor: 'rgba(255, 255, 255, 0.4)',
+        marginTop: '65%',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
         borderRadius: 50,
         marginVertical: 20,
         marginHorizontal: 30,
@@ -220,7 +219,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
       },
       logoTextContainer: {
-        backgroundColor: 'rgba(255, 196, 248, 0.3)',
+        backgroundColor: 'rgba(128,0,128, 0.3)',
         borderRadius: 25,
         width: 250,
         top: 10,
@@ -258,8 +257,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
-        bottom: 20,
+        bottom: 50,
         paddingHorizontal: 50,
+      },
+      buttonResetPwd: {
+        top: 50,
+        width: '100%',
+        alignItems: 'center',
       },
 });
 
