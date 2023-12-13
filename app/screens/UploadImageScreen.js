@@ -106,6 +106,7 @@ const UploadImageScreen = ({ navigation }) => {
         setErrorPhoto("Photo not valid. Please try again.")
       }
       alert('Veuillez remplir tous les champs');
+      setLoading(false);
     }
   };
 
