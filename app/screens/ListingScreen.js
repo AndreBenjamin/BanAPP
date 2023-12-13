@@ -7,6 +7,7 @@ import ProductCard from '../components/ProductCard';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
 import { FIREBASE_DB } from '../../FirebaseConfig';
+import Loading from '../components/Loading';
 
 const db = FIREBASE_DB;
 
@@ -52,9 +53,7 @@ const ListingScreen = ({ navigation }) => {
             <TopBar />
 
             {loading ? (
-                <View style={styles.loadingContainer}>
-                    <Image source={require('../assets/gif/Loading.gif')} style={styles.loadingGif} />
-                </View>
+               <Loading/>
             ) : (
                 <ScrollView>
                     {dogsArray.map((dog) => (
