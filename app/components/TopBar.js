@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, onSnapshot} from "firebase/firestore";
 import { FIREBASE_DB } from '../../FirebaseConfig';
 
 const db = FIREBASE_DB;
@@ -16,22 +16,18 @@ const TopBar = () => {
 
     const navigation = useNavigation();
 
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
-
-    // TODO: Get user photo on live
     useEffect(() => {
         const user = async () => {
             console.log(email)
             const q = query(collection(db, "users"), where("email", "==", email));
-
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                const user = doc.data();
-                setUserPhoto(user.photo)
-                console.log(user.photo)
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const user = doc.data();
+                    setUserPhoto(user.photo)
+                    console.log(user.photo)
+                });
             });
+            
         };
         user();
     }, []);

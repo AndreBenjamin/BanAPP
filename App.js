@@ -10,6 +10,7 @@ import SignInScreen from './app/screens/SignInScreen';
 import UploadImageScreen from './app/screens/UploadImageScreen';
 import BottomTabNavigator from './app/components/BottomBarNavigator';
 import WelcomeScreen from './app/screens/WelcomeScreen';
+import ChatGptScreen from './app/screens/ChatGptScreen';
 
 const Stack = createStackNavigator();
 

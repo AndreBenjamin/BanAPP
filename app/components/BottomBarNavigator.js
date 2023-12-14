@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import ListingScreen from '../screens/ListingScreen';
 import MapScreen from '../screens/MapScreen';
 import UploadImageScreen from '../screens/UploadImageScreen';
+import ChatGptScreen from '../screens/ChatGptScreen';
 import colors from '../config/colors';
 
 
@@ -37,8 +38,8 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="My Dogs"
-        component={UploadImageScreen}
+        name="Doggy Bot"
+        component={ChatGptScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="pets" size={size} color={colors.purple} />

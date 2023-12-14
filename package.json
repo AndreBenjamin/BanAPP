@@ -15,6 +15,7 @@
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/stack": "^6.3.20",
+    "axios": "^1.6.2",
     "body-parser": "^1.20.2",
     "expo": "^49.0.0",
     "expo-blur": "~12.4.1",
@@ -30,6 +31,7 @@
     "react-dom": "^18.2.0",
     "react-native": "0.72.6",
     "react-native-fs": "^2.20.0",
+    "react-native-gifted-chat": "^2.4.0",
     "react-native-maps": "1.7.1",
     "react-native-web": "~0.19.6",
     "url": "^0.11.3"
