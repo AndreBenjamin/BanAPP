@@ -32,7 +32,7 @@ function WelcomeScreen({ navigation }) {
                 </View>
             </View>
             <View style={styles.buttonContainer}>
-                <LoginButton text="Sign In" color="info" onPress={() => navigation.navigate('SignUpScreen')}/>
+                <LoginButton text="Login" color="info" onPress={() => navigation.navigate('SignUpScreen')}/>
                 <LoginButton text="Sign Up" color="purple"  onPress={() => navigation.navigate('SignInScreen')}/>
             </View>
             

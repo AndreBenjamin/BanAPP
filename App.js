@@ -10,7 +10,7 @@ import SignInScreen from './app/screens/SignInScreen';
 import UploadImageScreen from './app/screens/UploadImageScreen';
 import BottomTabNavigator from './app/components/BottomBarNavigator';
 import WelcomeScreen from './app/screens/WelcomeScreen';
-import ChatGptScreen from './app/screens/ChatGptScreen';
+import UserGuideScreen from './app/screens/UserGuideScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +25,7 @@ export default function App() {
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="UploadImageScreen" component={UploadImageScreen} options={{ headerShown: false }} />
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }}/>
+      <Stack.Screen name="UserGuideScreen" component={UserGuideScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -57,7 +57,7 @@ const SignInScreen = ({navigation}) => {
                         } catch (e) {
                         console.error("Error adding document: ", e);
                         }
-                      navigation.navigate('BottomTabNavigator');
+                      navigation.navigate('UserGuideScreen');
                     }
                   } catch (error) {
                     console.log(error.message);
