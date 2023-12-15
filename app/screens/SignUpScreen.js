@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, I
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
+import Loading from '../components/Loading';
 
 // Import Firebase
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -13,7 +14,7 @@ const db = FIREBASE_DB;
 
 const LoginScreen = ({navigation}) => {
     // Import Images
-    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
+    const image = require('../assets/welcome-screen.jpg');;
     const logo = require('../assets/dog.png');
 
     // Import auth
@@ -119,7 +120,7 @@ const LoginScreen = ({navigation}) => {
               </View>
 
               {loading ? (
-                  <ActivityIndicator size="large" color={colors.primary} />
+                  <Loading />
               ) : (
                 <View style={styles.loginContainer}>
                   <LoginButton text="Login" color="purple" onPress={handleLogin}/>

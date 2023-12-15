@@ -14,7 +14,7 @@ import { collection, addDoc } from "firebase/firestore";
 
 const SignInScreen = ({navigation}) => {
     // Import Images
-    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
+    const image = require('../assets/welcome-screen.jpg');;
     const logo = require('../assets/dog.png');
 
     const [loading, setLoading] = useState(false);

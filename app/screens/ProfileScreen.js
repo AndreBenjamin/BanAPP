@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Linking } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Linking, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
@@ -14,12 +14,12 @@ import Loading from '../components/Loading';
 
 import ImageViewer from '../components/ImageViewer';
 
-const PlaceholderImage = require('../assets/dog.png');
 const db = FIREBASE_DB;
 
 function ProfileScreen({ navigation }) {
 
     const email = FIREBASE_AUTH.currentUser.email;
+    const image = require('../assets/profileScreen.webp');;
 
     // Modal parts
     const [modalVisible, setModalVisible] = useState(false);
@@ -117,7 +117,6 @@ function ProfileScreen({ navigation }) {
                     veterinaryEmail: veterinaryEmail || "",
                     isAdmin: isAdmin || 0,
                 });
-                console.log("Document written with ID: ", docRef.id);
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
@@ -169,32 +168,34 @@ function ProfileScreen({ navigation }) {
     const handleLogout = () => navigation.navigate('WelcomeScreen')
 
     return (
-        <View style={{ flex: 1, backgroundColor: colors.light }}>
+        <ImageBackground source={image} style={{flex: 1}}>
             <TopBar />
             {loading ? (
-        <Loading />
-      ) : (
-        <>
-            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white, width: '100%', padding: 10 }}>
-                <View>
-                    <TouchableOpacity style={styles.icon} onPress={pickImageAsync}>
-                        <ImageViewer placeholderImageSource={{ uri: userPhoto }} selectedImage={selectedImage} style={{ width: 80, height: 80, borderRadius: 40 }} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                            style={styles.savePhotoButton}
-                            onPress={handleUpload}
-                        >
-                            <Text style={{ fontSize: 25, color: 'gray' }}>{saveChangeButton}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ marginLeft: 20 }}>
-                    <Text style={{ fontSize: 24 }}>{name}</Text>
-                    <Text style={{ fontSize: 16, color: 'gray' }}>{email}</Text>
-                    <Text style={{ fontSize: 25, color: 'gray' }}>{boneCount}<MaterialCommunityIcons name="bone" size={45} color="pink" /></Text>
+                <Loading />
+            ) : (
+            <>
+            <View style={{ padding: 10 }}>
+                <View style={styles.userInfoContainer}>
+                    <View>
+                        <TouchableOpacity style={styles.icon} onPress={pickImageAsync}>
+                            <ImageViewer placeholderImageSource={{ uri: userPhoto }} selectedImage={selectedImage} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                                style={styles.savePhotoButton}
+                                onPress={handleUpload}
+                            >
+                                <Text style={{ fontSize: 25, color: 'gray' }}>{saveChangeButton}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ marginLeft: 20 }}>
+                        <Text style={{ fontSize: 24 }}>{name}</Text>
+                        <Text style={{ fontSize: 16 }}>{email}</Text>
+                        <Text style={{ fontSize: 25 }}>{boneCount}<MaterialCommunityIcons name="bone" size={45} color="pink" /></Text>
+                    </View>
                 </View>
             </View>
             <View style={{ padding: 10 }}>
-                <View style={{ backgroundColor: colors.purple, borderRadius: 15, top: 15, alignContent: 'center', alignItems: 'center' }}>
+                <View style={styles.veterinaryInfo}>
                     <Text style={{ fontSize: 20, marginLeft: 20, fontWeight: 'bold' }}>My veterinary</Text>
                     <View style={styles.listContainer}>
                         <MaterialCommunityIcons name="account-circle" size={24} color="black" />
@@ -223,14 +224,14 @@ function ProfileScreen({ navigation }) {
             </TouchableOpacity>
             </>
         )}
-        <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
+            <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={{ marginBottom: 30, backgroundColor: colors.white, borderRadius: 15, padding: 5 }}>
@@ -265,7 +266,7 @@ function ProfileScreen({ navigation }) {
                     </View>
                 </View>
             </Modal>
-        </View>
+        </ImageBackground>
     );
 }
 
@@ -348,6 +349,22 @@ const styles = StyleSheet.create({
         bottom: 50,
         paddingHorizontal: 50,
       },
+      veterinaryInfo: { 
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        borderRadius: 15, 
+        top: 15, 
+        alignContent: 'center', 
+        alignItems: 'center'
+    },
+    userInfoContainer: { 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+        borderRadius: 15,  
+        width: '100%', 
+        padding: 10,
+        top: 15,
+    }
 })
 
 export default ProfileScreen;

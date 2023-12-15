@@ -1,13 +1,19 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import axios from 'axios';
 import colors from '../config/colors';
 import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { collection, query, where, getDocs, onSnapshot} from "firebase/firestore";
+import { collection, query, where, getDocs} from "firebase/firestore";
+import { FIREBASE_DB } from '../../FirebaseConfig';
+
+const db = FIREBASE_DB;
+
 
 const ChatBot = () => {
+
+    const image = require('../assets/doggy-bot.png');;
 
     const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
 
@@ -17,16 +23,13 @@ const ChatBot = () => {
 
     useEffect(() => {
         const user = async () => {
-            console.log(email)
             const q = query(collection(db, "users"), where("email", "==", email));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const user = doc.data();
-                    setUserPhoto(user.photo)
-                    console.log(user.photo)
-                });
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                console.log(user.photo);
+                setUserPhoto(user.photo)
             });
-            
         };
         user();
     }, []);
@@ -50,7 +53,7 @@ const ChatBot = () => {
                     user: {
                         _id: 2,
                         name: 'Doggy Bot',
-                        avatar: 'https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/dogsImage%2Fdog.png?alt=media&token=0563835c-7d45-46a6-952f-182e01a4886a',
+                        avatar: 'https://cdn.discordapp.com/attachments/763467509759475813/1185245997832618075/logo.png?ex=658ee95a&is=657c745a&hm=0fd9cfad820d82929d30812c7729db921bafa709a1a35e87a2278f89b120a978&',
                     }
                 };
                 setMessages(previousMessages => GiftedChat.append(previousMessages, botMessage));
@@ -78,7 +81,7 @@ const ChatBot = () => {
                 user: {
                     _id: 2,
                     name: 'Doggy Bot',
-                    avatar: 'https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/dogsImage%2Fdog.png?alt=media&token=0563835c-7d45-46a6-952f-182e01a4886a',
+                    avatar: 'https://cdn.discordapp.com/attachments/763467509759475813/1185245997832618075/logo.png?ex=658ee95a&is=657c745a&hm=0fd9cfad820d82929d30812c7729db921bafa709a1a35e87a2278f89b120a978&',
                 }   
             };
 
@@ -92,10 +95,8 @@ const ChatBot = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ backgroundColor: colors.white, padding: 10, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, marginBottom: 5}}>
-                <Text style={{ fontSize: 32, fontWeight: 'bold' }}>
-                    Doggy Bot
-                </Text>
+            <View style={{ backgroundColor: colors.purple, padding: 10, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, marginBottom: 5}}>
+                <Image source={{uri: image}} style={{width: 150, height: 150}} />
             </View>            
             <GiftedChat 
                 messages={messages}

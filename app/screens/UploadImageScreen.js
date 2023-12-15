@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ImageBackground, StyleSheet} from 'react-native';
+import { View, Text, TextInput, ImageBackground, StyleSheet, Image} from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
@@ -18,8 +18,8 @@ const PlaceholderImage = require('../assets/dog.png');
 
 const UploadImageScreen = ({ navigation }) => {
   // Import Images
-  const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
-  const logo = require('../assets/dog.png');
+  const image = require('../assets/french-bulldog.jpg');
+  const logo = require('../assets/logo.png');
 
   const storage = getStorage();
 
@@ -117,9 +117,12 @@ const UploadImageScreen = ({ navigation }) => {
         <Loading />
       ) : (
         <>
-          <View style={styles.logoTextContainer}>
-            <Text style={styles.text}>Pick Your DOG!</Text>
-          </View>
+          <View style={styles.logoView}>
+                <Image
+                    style={styles.logo}
+                    source={logo}
+                />
+            </View>
 
           <View style={styles.inputContainer}>
             <View style={{ marginBottom: 30 }}>
@@ -171,8 +174,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     alignItems: 'center',
-    marginTop: '50%',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    marginTop: '20%',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 50,
     marginVertical: 20,
     marginHorizontal: 30,
@@ -236,11 +239,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  logoTextContainer: {
-    borderRadius: 25,
-    width: 250,
-    top: "12%",
-  },
   text: {
     fontWeight: 'bold',
     fontFamily: 'Roboto',
@@ -250,6 +248,24 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     alignSelf: 'center'
+  },
+  
+  // logo part
+  logo: {
+    width: 200,
+    height: 200,
+  },
+  logoView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoText: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: '300',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 

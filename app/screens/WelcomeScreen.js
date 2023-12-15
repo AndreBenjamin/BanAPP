@@ -7,7 +7,8 @@ import LoginButton from '../components/LoginButton';
 const windowWidth = Dimensions.get('window').width;
 
 function WelcomeScreen({ navigation }) {
-    const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
+    const image = require('../assets/welcome-screen.jpg');;
+
     const logo = require('../assets/dog.png');
     return (
 
