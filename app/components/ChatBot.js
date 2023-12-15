@@ -33,7 +33,7 @@ const ChatBot = () => {
 
     // ChatGPT API
     const [messages, setMessages] = useState([])
-    const chatGptApiKey = '';
+    const chatGptApiKey = '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';
 
     const handleSend = async (newMessage = []) => {
         try{

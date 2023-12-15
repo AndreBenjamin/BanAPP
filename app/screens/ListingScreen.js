@@ -11,31 +11,41 @@ import Loading from '../components/Loading';
 
 const db = FIREBASE_DB;
 
-import { collection, getDocs, addDoc } from "firebase/firestore"; 
+import { collection, getDocs, addDoc, query, onSnapshot, where } from "firebase/firestore"; 
 
 const ListingScreen = ({ navigation }) => {
     const [dogsArray, setDogsArray] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useFocusEffect(() => {
+    useEffect(() => {
         
         const fetchData = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'dogsPhoto'));
                 const fetchedDogs = [];
-                querySnapshot.forEach((doc) => {
-                    const dog = doc.data();
-                    const dogImage = { uri: dog.image };
-                    fetchedDogs.push({
-                        id: doc.id,
-                        name: dog.dogName,
-                        status: dog.status,
-                        image: dogImage,
-                        dogImagePath: dog.image,
-                        userEmail: dog.userEmail,
-                        bone: dog.bone,
-                        date: dog.date,
+                console.log("fetching data");
+                const unsubscribe = onSnapshot(collection(db, "dogsPhoto"), (snapshot) => {
+                    const fetchedDogs = [];
+                
+                    snapshot.forEach((doc) => {
+                        const dog = doc.data();
+                        const dogImage = { uri: dog.image };
+                        fetchedDogs.push({
+                            id: doc.id,
+                            name: dog.dogName,
+                            status: dog.status,
+                            image: dogImage,
+                            dogImagePath: dog.image,
+                            userEmail: dog.userEmail,
+                            bone: dog.bone,
+                            date: dog.date,
+                        });
                     });
+                
+                    console.log("Fetched dogs:", fetchedDogs);
+                
+                    setDogsArray(fetchedDogs);
+                }, (error) => {
+                    console.error("Error fetching data:", error);
                 });
                 setDogsArray(fetchedDogs);
             } catch (error) {
@@ -46,7 +56,7 @@ const ListingScreen = ({ navigation }) => {
         };
 
         fetchData();
-    });
+    }, []); 
 
     return (
         <SafeAreaView  style={{ flex: 1, backgroundColor: colors.grey}}>

@@ -10,15 +10,6 @@ const windowWidth = Dimensions.get('window').width;
 function WelcomeScreen({ navigation }) {
     const image = { uri: "https://www.meatiful.co.uk/wp-content/uploads/2022/05/5-reasons-why-working-dogs-are-the-best-dogs.jpg" };
     const logo = require('../assets/dog.png');
-    const thanks = () => Alert.alert("Merci copain");
-    const handlePressButton = () => Alert.alert("OUAF", "Tu as du fromage pour moi!", [
-      {
-        text: 'Oui',
-        onPress: (thanks),
-        style: 'cancel',
-      },
-      { text: 'Non', onPress: (handlePressButton) },
-    ]);
     return (
 
         <ImageBackground source={image} style={styles.imageContainer}>

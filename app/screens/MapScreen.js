@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView, { Marker } from 'react-native-maps';
+//import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import TopBar from '../components/TopBar';
 import BottomBarNavigator from '../components/BottomBarNavigator';
@@ -9,7 +9,7 @@ export default function App() {
   return (
     
     <SafeAreaView  style={{ flex: 1, backgroundColor: colors.light }}>
-        <TopBar />
+        {/* <TopBar />
           {<MapView
             style={styles.map}
             initialRegion={{
@@ -32,7 +32,7 @@ export default function App() {
               title="La citadelle"
             />
           </MapView> }
-        <BottomBarNavigator/>
+        <BottomBarNavigator/> */}
     </SafeAreaView >
   );
 }
