@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { useFocusEffect } from '@react-navigation/native';
-import { View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, SafeAreaView, Image } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Text, SafeAreaView } from 'react-native';
 import ProductCard from '../components/ProductCard';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
@@ -11,7 +10,7 @@ import Loading from '../components/Loading';
 
 const db = FIREBASE_DB;
 
-import { collection, getDocs, addDoc, query, onSnapshot, where } from "firebase/firestore"; 
+import { collection, onSnapshot } from "firebase/firestore"; 
 
 const ListingScreen = ({ navigation }) => {
     const [dogsArray, setDogsArray] = useState([]);

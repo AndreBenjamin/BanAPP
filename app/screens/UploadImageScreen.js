@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Dimensions, Image, ActivityIndicator, Modal, Alert } from 'react-native';
+import { View, Text, TextInput, ImageBackground, StyleSheet} from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
 import TopBar from '../components/TopBar';
 
 // Import Firebase
@@ -152,7 +151,7 @@ const UploadImageScreen = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.loginContainer}>
-            <LoginButton text="Upload" color="pink" onPress={handleUpload} />
+            <LoginButton text="Upload" color="purple" onPress={handleUpload} />
           </View>
         </>
       )}

@@ -1,6 +1,8 @@
-import React, { useState, useEffect, cloneElement } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Linking } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AppText from '../components/AppText';
+import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
 import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
@@ -8,11 +10,10 @@ import { FIREBASE_DB } from '../../FirebaseConfig';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
 import Loading from '../components/Loading';
 
 import ImageViewer from '../components/ImageViewer';
-import Button from '../components/Button';
+
 const PlaceholderImage = require('../assets/dog.png');
 const db = FIREBASE_DB;
 
@@ -20,11 +21,20 @@ function ProfileScreen({ navigation }) {
 
     const email = FIREBASE_AUTH.currentUser.email;
 
+    // Modal parts
+    const [modalVisible, setModalVisible] = useState(false);
 
+    // Veterinary parts
+    const [veterinaryName, setVeterinaryName] = useState("");
+    const [veterinaryPhone, setVeterinaryPhone] = useState("");
+    const [veterinaryEmail, setVeterinaryEmail] = useState("");
+
+    // Users parts
     const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
     const [name, setName] = useState("");
     const [id, setId] = useState("");
-    const [boneCount, setBoneCount] = useState(0)
+    const [boneCount, setBoneCount] = useState(0);
+    const [saveChangeButton, setSaveChangeButton] = useState("");
 
     const [selectedImage, setSelectedImage] = useState(null);
 
@@ -53,11 +63,33 @@ function ProfileScreen({ navigation }) {
         if (!result.canceled) {
             setSelectedImage(result.assets[0].uri);
             setUserPhoto(result.assets[0].uri);
+            setSaveChangeButton("Save");
         } else {
             alert("You did not select any image.");
         }
     };
 
+    const handleUploadVeterinary = async () => {
+        setLoading(true)
+        try {
+            const docRef = await setDoc(doc(db, "users", id), {
+                photo: userPhoto,
+                email: email,
+                name: name,
+                lastConnection: new Date(),
+                veterinaryName: veterinaryName,
+                veterinaryPhone: veterinaryPhone,
+                veterinaryEmail: veterinaryEmail,
+            });
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+        finally{
+            setLoading(false)
+        }
+        setModalVisible(!modalVisible);
+    };
 
     const handleUpload = async () => {
         if (selectedImage) {
@@ -78,6 +110,9 @@ function ProfileScreen({ navigation }) {
                     email: email,
                     name: name,
                     lastConnection: new Date(),
+                    veterinaryName: veterinaryName,
+                    veterinaryPhone: veterinaryPhone,
+                    veterinaryEmail: veterinaryEmail,
                 });
                 console.log("Document written with ID: ", docRef.id);
             } catch (e) {
@@ -89,9 +124,7 @@ function ProfileScreen({ navigation }) {
             navigation.navigate('ListingScreen');
         } else {
             console.log('Veuillez remplir tous les champs');
-            if (!photo) {
-                setErrorPhoto("Photo not valid. Please try again.")
-            }
+            
             alert('Veuillez remplir tous les champs');
             setLoading(false);
         }
@@ -99,7 +132,6 @@ function ProfileScreen({ navigation }) {
 
     useEffect(() => {
         const user = async () => {
-            // TODO BEN : change the query to get with uuid instead of email
             const q = query(collection(db, "users"), where("email", "==", email));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
@@ -107,6 +139,9 @@ function ProfileScreen({ navigation }) {
                 console.log("name", user.name)
                 setUserPhoto(user.photo)
                 setName(user.name)
+                setVeterinaryName(user.veterinaryName)
+                setVeterinaryPhone(user.veterinaryPhone)
+                setVeterinaryEmail(user.veterinaryEmail)
                 setId(doc.id)
             });
         };
@@ -127,8 +162,6 @@ function ProfileScreen({ navigation }) {
         dog();
     }, []);
 
-
-
     const handleLogout = () => navigation.navigate('WelcomeScreen')
 
     return (
@@ -139,36 +172,41 @@ function ProfileScreen({ navigation }) {
       ) : (
         <>
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white, width: '100%', padding: 10 }}>
-                <TouchableOpacity style={styles.icon} onPress={pickImageAsync}>
-                    <ImageViewer placeholderImageSource={{ uri: userPhoto }} selectedImage={selectedImage} style={{ width: 80, height: 80, borderRadius: 40 }} />
-                </TouchableOpacity>
+                <View>
+                    <TouchableOpacity style={styles.icon} onPress={pickImageAsync}>
+                        <ImageViewer placeholderImageSource={{ uri: userPhoto }} selectedImage={selectedImage} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                            style={styles.savePhotoButton}
+                            onPress={handleUpload}
+                        >
+                            <Text style={{ fontSize: 25, color: 'gray' }}>{saveChangeButton}</Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={{ marginLeft: 20 }}>
                     <Text style={{ fontSize: 24 }}>{name}</Text>
                     <Text style={{ fontSize: 16, color: 'gray' }}>{email}</Text>
                     <Text style={{ fontSize: 25, color: 'gray' }}>{boneCount}<MaterialCommunityIcons name="bone" size={45} color="pink" /></Text>
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={handleUpload}
-                    >
-                        <Text style={{ fontSize: 25, color: 'gray' }}>Save change</Text>
-                    </TouchableOpacity>
                 </View>
             </View>
             <View style={{ padding: 10 }}>
-                <View style={{ backgroundColor: colors.pink, borderRadius: 15, top: 15, alignContent: 'center', alignItems: 'center' }}>
+                <View style={{ backgroundColor: colors.purple, borderRadius: 15, top: 15, alignContent: 'center', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, marginLeft: 20, fontWeight: 'bold' }}>My veterinary</Text>
                     <View style={styles.listContainer}>
+                        <MaterialCommunityIcons name="account-circle" size={24} color="black" />
+                        <Text style={{ fontSize: 20, marginLeft: 20 }}>{veterinaryName}</Text>
+                    </View>
+                    <View style={styles.listContainer}>
                         <MaterialCommunityIcons name="phone" size={24} color="black" />
-                        <Text onPress={() => Linking.openURL('tel:06 12 13 14 15')} style={{ fontSize: 20, marginLeft: 20 }}>06 12 13 14 15</Text>
-                        <TouchableOpacity style={styles.editButton} onPress={() => { navigation.navigate('UploadImageScreen'); }}>
-                            <Text><MaterialCommunityIcons name="square-edit-outline" size={24} color="black" /></Text>
-                        </TouchableOpacity>
+                        <Text onPress={() => Linking.openURL(`tel:${veterinaryPhone}`)} style={{ fontSize: 20, marginLeft: 20 }}>{veterinaryPhone}</Text>
                     </View>
                     <View style={styles.listContainer}>
                         <MaterialCommunityIcons name="email" size={24} color="black" />
-                        <Text onPress={() => Linking.openURL('mailto:lal@gmail.com')} style={{ fontSize: 20, marginLeft: 20 }}>lal@gmail.com</Text>
-                        <TouchableOpacity style={styles.editButton} onPress={() => { navigation.navigate('UploadImageScreen'); }}>
-                            <Text><MaterialCommunityIcons name="square-edit-outline" size={24} color="black" /></Text>
+                        <Text onPress={() => Linking.openURL(`mailto:${veterinaryEmail}`)} style={{ fontSize: 20, marginLeft: 20 }}>{veterinaryEmail}</Text>
+                    </View>
+                    <View style={{alignContent: 'center', justifyContent: 'center'}}>
+                        <TouchableOpacity style={styles.editButton} onPress={() => setModalVisible(true)}>
+                            <Text><MaterialCommunityIcons name="square-edit-outline" size={45} color="black" /></Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -181,6 +219,48 @@ function ProfileScreen({ navigation }) {
             </TouchableOpacity>
             </>
         )}
+        <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ marginBottom: 30, backgroundColor: colors.white, borderRadius: 15, padding: 5 }}>
+                            <AppText>Change veterinary info:</AppText>
+                        </View>
+
+                        <TextInput
+                            style={styles.inputResetPwd}
+                            placeholder="Enter veterinary name"
+                            value={veterinaryName}
+                            onChangeText={setVeterinaryName}
+                            keyboardType="text"
+                        />
+                        <TextInput
+                            style={styles.inputResetPwd}
+                            placeholder="Enter veterinary phone"
+                            value={veterinaryPhone}
+                            onChangeText={setVeterinaryPhone}
+                            keyboardType="phone-pad"
+                        />
+                        <TextInput
+                            style={styles.inputResetPwd}
+                            placeholder="Enter veterinary email"
+                            value={veterinaryEmail}
+                            onChangeText={setVeterinaryEmail}
+                            keyboardType="email-address"
+                        />
+                        <View style={styles.buttonChangeInfo}>
+                            <LoginButton text="Save" color="info" onPress={handleUploadVeterinary} />
+                            <LoginButton text="Close" color="purple" onPress={() => setModalVisible(!modalVisible)} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -189,24 +269,32 @@ const styles = StyleSheet.create({
     icon:
     {
         borderRadius: 55,
-        backgroundColor: colors.pink,
+        backgroundColor: colors.purple,
         padding: 5
     },
     listContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: colors.pink,
-        padding: 20,
+        padding: 10,
         width: '90%',
     },
     logoutButton: {
-        backgroundColor: colors.pink,
+        backgroundColor: colors.purple,
         borderRadius: 10,
         paddingVertical: 10,
         marginTop: 'auto',
         alignItems: 'center',
         marginHorizontal: '35%',
         width: '30%',
+        marginBottom: 20,
+    },
+    savePhotoButton: {
+        borderRadius: 10,
+        paddingVertical: 10,
+        marginTop: 'auto',
+        alignItems: 'center',
+        marginHorizontal: '35%',
+        width: '50%',
         marginBottom: 20,
     },
     saveButton: {
@@ -216,12 +304,46 @@ const styles = StyleSheet.create({
         width: '30%',
     },
     editButton: {
-        backgroundColor: colors.pink,
         borderRadius: 10,
         paddingVertical: 10,
-        left: 20,
         width: '30%',
     },
+    buttonChangeInfo: {
+    top: 50,
+    width: '100%',
+    alignItems: 'center',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: colors.white,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: colors.black,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        marginTop: 22,
+      },
+      inputResetPwd: {
+        backgroundColor: "white",
+        borderColor: "gray",
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 20,
+        bottom: 50,
+        paddingHorizontal: 50,
+      },
 })
 
 export default ProfileScreen;

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import colors from '../config/colors';
 import ProductCard from '../components/ProductCard';
 import TopBar from '../components/TopBar';
 import BoneButton from '../components/BoneButton';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Import Firebase
 import { FIREBASE_DB } from '../../FirebaseConfig';
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
     },
     sellerContainer: {
         flex: 1,
-        backgroundColor: colors.white,
+        borderRadius: 55,
         flexDirection: 'row',
     },
     boneContainer: {

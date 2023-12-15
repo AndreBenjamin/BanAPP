@@ -1,6 +1,5 @@
 import React from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, Button, Alert, View, ImageBackground, Dimensions, StatusBar } from 'react-native';
-import colors from '../config/colors';
+import { Image, StyleSheet, View, ImageBackground, Dimensions, StatusBar } from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 

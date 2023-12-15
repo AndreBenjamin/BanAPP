@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Dimensions, Image, ActivityIndicator, Modal, Alert} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Image, ActivityIndicator, Modal} from 'react-native';
 import AppText from '../components/AppText';
 import LoginButton from '../components/LoginButton';
 import colors from '../config/colors';
-import {BlurView} from 'expo-blur'
 
 // Import Firebase
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -11,8 +10,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 const db = FIREBASE_DB;
-import { collection, addDoc } from "firebase/firestore"; 
-
 
 const LoginScreen = ({navigation}) => {
     // Import Images
@@ -158,7 +155,7 @@ const LoginScreen = ({navigation}) => {
                       />
                   <View style={styles.buttonResetPwd}>
                     <LoginButton text="Reset Password" color="info" onPress={handleResetPwd}/>
-                    <LoginButton text="Close" color="danger" onPress={() => setModalVisible(!modalVisible)}/>
+                    <LoginButton text="Close" color="purple" onPress={() => setModalVisible(!modalVisible)}/>
                   </View>
                 </View>
               </View>

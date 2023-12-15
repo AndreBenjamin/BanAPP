@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View} from 'react-native';
 import ChatBot from '../components/ChatBot';
 import colors from '../config/colors';
 import TopBar from '../components/TopBar';
