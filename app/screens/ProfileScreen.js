@@ -33,6 +33,7 @@ function ProfileScreen({ navigation }) {
     const [userPhoto, setUserPhoto] = useState("https://firebasestorage.googleapis.com/v0/b/pickyourdog.appspot.com/o/userImage%2Fimages.png?alt=media&token=c5786220-6bf4-40bd-8f9c-11804354002e");
     const [name, setName] = useState("");
     const [id, setId] = useState("");
+    const [isAdmin, setIsAdmin] = useState(0);
     const [boneCount, setBoneCount] = useState(0);
     const [saveChangeButton, setSaveChangeButton] = useState("");
 
@@ -77,9 +78,10 @@ function ProfileScreen({ navigation }) {
                 email: email,
                 name: name,
                 lastConnection: new Date(),
-                veterinaryName: veterinaryName,
-                veterinaryPhone: veterinaryPhone,
-                veterinaryEmail: veterinaryEmail,
+                veterinaryName: veterinaryName || "",
+                veterinaryPhone: veterinaryPhone || "",
+                veterinaryEmail: veterinaryEmail || "",
+                isAdmin: isAdmin || 0,
             });
             console.log("Document written with ID: ", docRef.id);
         } catch (e) {
@@ -110,9 +112,10 @@ function ProfileScreen({ navigation }) {
                     email: email,
                     name: name,
                     lastConnection: new Date(),
-                    veterinaryName: veterinaryName,
-                    veterinaryPhone: veterinaryPhone,
-                    veterinaryEmail: veterinaryEmail,
+                    veterinaryName: veterinaryName || "",
+                    veterinaryPhone: veterinaryPhone || "",
+                    veterinaryEmail: veterinaryEmail || "",
+                    isAdmin: isAdmin || 0,
                 });
                 console.log("Document written with ID: ", docRef.id);
             } catch (e) {
@@ -142,6 +145,7 @@ function ProfileScreen({ navigation }) {
                 setVeterinaryName(user.veterinaryName)
                 setVeterinaryPhone(user.veterinaryPhone)
                 setVeterinaryEmail(user.veterinaryEmail)
+                setIsAdmin(user.isAdmin)
                 setId(doc.id)
             });
         };

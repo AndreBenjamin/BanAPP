@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, CheckBox, Button, StyleSheet } from 'react-native';
 
-const UserGuideScreen = ({ navigate }) => {
+const UserGuideScreen = ({ navigation }) => {
     const [acceptConditions, setAcceptConditions] = useState(false);
     const [errorAcceptCondition, setErrorAcceptCondition] = useState("");
 
